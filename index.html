@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tablón UMA - Red social retro para estudiantes universitarios de Málaga. Comparte coche, descubre eventos y conecta con tus compañeros.">
+  <meta name="theme-color" content="#0A1628">
+  <title>Tablón UMA – Tu red social universitaria retro</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>📋</text></svg>">
+</head>
+<body>
+
+  <!-- ============================================
+       LOGIN PAGE
+       ============================================ -->
+  <div id="login-page">
+    <div class="login-container">
+      <div class="login-logo">
+        <span class="retro-icon">📋</span>
+        <h1>TABLÓN UMA</h1>
+        <p class="subtitle">Tu red social universitaria retro · Málaga</p>
+      </div>
+
+      <div class="login-card glass-card">
+        <div id="login-error" class="login-error">
+          ⚠️ Usuario o contraseña incorrectos
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-username">👤 Usuario</label>
+            <input type="text" id="login-username" class="form-input" placeholder="tu.nombre" autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">🔒 Contraseña</label>
+            <input type="password" id="login-password" class="form-input" placeholder="••••••••" autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" id="login-btn">
+            Entrar al Tablón 🚀
+          </button>
+        </form>
+
+        <div class="divider">acceso rápido</div>
+
+        <div id="quick-login-grid" class="login-users-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <p style="text-align:center; margin-top:16px; font-size:0.75rem; color:var(--text-muted);">
+        Contraseña para todos: <strong style="color:var(--accent)">tuenti2026</strong>
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================
+       MAIN APP
+       ============================================ -->
+  <div id="app-page">
+
+    <!-- ---- Header ---- -->
+    <header class="app-header">
+      <div class="header-left">
+        <button class="hamburger" id="hamburger-btn" aria-label="Menú">☰</button>
+        <div class="header-logo" id="header-logo">TABLÓN UMA</div>
+        <div class="header-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="global-search" placeholder="Buscar personas, viajes, eventos...">
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button class="header-btn" id="btn-notifications" aria-label="Notificaciones" style="position:relative;">
+          🔔
+          <span class="notification-badge" id="notif-badge" style="display:none;">0</span>
+        </button>
+        <button class="header-btn" id="btn-messages-header" aria-label="Mensajes" style="position:relative;">
+          ✉️
+          <span class="notification-badge" id="msg-badge" style="display:none;">0</span>
+        </button>
+
+        <div style="position:relative;">
+          <div class="header-user" id="header-user-btn">
+            <div class="avatar avatar-sm" id="header-avatar"></div>
+            <span id="header-username"></span>
+          </div>
+          <div class="user-dropdown" id="user-dropdown">
+            <button onclick="App.navigateTo('profile')">👤 Mi Perfil</button>
+            <button onclick="App.navigateTo('settings')">⚙️ Ajustes</button>
+            <div class="dropdown-divider"></div>
+            <button onclick="App.resetData()" style="color:var(--warning);">🔄 Resetear datos</button>
+            <button onclick="App.logout()" style="color:var(--error-light);">🚪 Cerrar sesión</button>
+          </div>
+        </div>
+
+        <!-- Notifications Panel -->
+        <div class="notifications-panel" id="notifications-panel">
+          <div class="notifications-header">
+            <h4>🔔 Notificaciones</h4>
+            <button class="btn btn-ghost btn-sm" onclick="App.markAllNotifsRead()">Marcar leídas</button>
+          </div>
+          <div id="notifications-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ---- Sidebar Overlay (mobile) ---- -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- ---- Sidebar ---- -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-page="feed" onclick="App.navigateTo('feed')">
+          <span class="nav-icon">🏠</span> Inicio
+        </button>
+        <button class="nav-item" data-page="events" onclick="App.navigateTo('events')">
+          <span class="nav-icon">📋</span> Tablón
+          <span class="nav-badge" id="events-badge" style="display:none;">0</span>
+        </button>
+        <button class="nav-item" data-page="rides" onclick="App.navigateTo('rides')">
+          <span class="nav-icon">🚗</span> Viajes
+        </button>
+        <button class="nav-item" data-page="messages" onclick="App.navigateTo('messages')">
+          <span class="nav-icon">✉️</span> Mensajes
+          <span class="nav-badge" id="messages-nav-badge" style="display:none;">0</span>
+        </button>
+        <button class="nav-item" data-page="friends" onclick="App.navigateTo('friends')">
+          <span class="nav-icon">👥</span> Amigos
+        </button>
+        <button class="nav-item" data-page="profile" onclick="App.navigateTo('profile')">
+          <span class="nav-icon">👤</span> Mi Perfil
+        </button>
+      </nav>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Amigos conectados</div>
+        <div class="friends-mini-list" id="sidebar-friends">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="sidebar-section" style="padding-bottom: 16px;">
+        <div class="sidebar-section-title retro-tag">⚡ Tablón UMA v1.0</div>
+        <p style="font-size:0.7rem; color:var(--text-muted); padding:0 16px; margin-top:6px;">
+          Hecho con 💙 para los estudiantes de la UMA
+        </p>
+      </div>
+    </aside>
+
+    <!-- ---- Main Content ---- -->
+    <main class="app-main">
+      <div class="content-wrapper">
+
+        <!-- ==== FEED ==== -->
+        <section class="page-section active" id="section-feed">
+          <div class="section-header">
+            <h2>🏠 Inicio <span class="retro-title">// MI TABLÓN</span></h2>
+            <p>Las últimas novedades de tus amigos y compañeros de viaje</p>
+          </div>
+
+          <div class="create-post-box glass-card">
+            <div class="post-input-row">
+              <div class="avatar" id="feed-user-avatar"></div>
+              <textarea id="new-post-input" placeholder="¿Qué pasa por tu tablón? 🎉"></textarea>
+            </div>
+            <div class="post-actions">
+              <button class="btn btn-accent btn-sm" onclick="App.createPost()">Publicar ✨</button>
+            </div>
+          </div>
+
+          <div id="feed-posts">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
+        <!-- ==== EVENTS / TABLÓN ==== -->
+        <section class="page-section" id="section-events">
+          <div class="section-header">
+            <h2>📋 Tablón <span class="retro-title">// EVENTOS Y PLANES</span></h2>
+            <p>Planes, eventos y actividades para jóvenes en Málaga y alrededores</p>
+          </div>
+
+          <div class="events-filter-bar" id="events-filters">
+            <button class="filter-chip active" data-filter="all" onclick="App.filterEvents('all')">🌟 Todos</button>
+            <button class="filter-chip" data-filter="musica" onclick="App.filterEvents('musica')">🎵 Música</button>
+            <button class="filter-chip" data-filter="deporte" onclick="App.filterEvents('deporte')">⚽ Deporte</button>
+            <button class="filter-chip" data-filter="cultura" onclick="App.filterEvents('cultura')">🎭 Cultura</button>
+            <button class="filter-chip" data-filter="fiesta" onclick="App.filterEvents('fiesta')">🎉 Fiesta</button>
+            <button class="filter-chip" data-filter="empleo" onclick="App.filterEvents('empleo')">💼 Empleo</button>
+            <button class="filter-chip" data-filter="tecnologia" onclick="App.filterEvents('tecnologia')">💻 Tech</button>
+            <button class="filter-chip" data-filter="gastronomia" onclick="App.filterEvents('gastronomia')">🍽️ Gastro</button>
+            <button class="filter-chip" data-filter="voluntariado" onclick="App.filterEvents('voluntariado')">🤝 Voluntariado</button>
+            <button class="filter-chip" data-filter="mercadillo" onclick="App.filterEvents('mercadillo')">🛍️ Mercadillo</button>
+          </div>
+
+          <div id="events-list">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
+        <!-- ==== RIDES / VIAJES ==== -->
+        <section class="page-section" id="section-rides">
+          <div class="section-header">
+            <h2>🚗 Viajes <span class="retro-title">// COMPARTE COCHE</span></h2>
+            <p>Comparte coche desde tu pueblo hasta el campus. ¡Ahorra y conoce gente!</p>
+          </div>
+
+          <div class="rides-actions-bar">
+            <button class="btn btn-accent" onclick="App.openCreateRideModal()">
+              ➕ Ofrecer viaje
+            </button>
+            <button class="btn btn-outline" onclick="App.filterRides('all')">🌟 Todos</button>
+            <button class="btn btn-outline" onclick="App.filterRides('teatinos')">🎓 Teatinos</button>
+            <button class="btn btn-outline" onclick="App.filterRides('ejido')">📚 El Ejido</button>
+          </div>
+
+          <div id="rides-list">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
+        <!-- ==== MESSAGES ==== -->
+        <section class="page-section" id="section-messages">
+          <div class="section-header">
+            <h2>✉️ Mensajes <span class="retro-title">// PRIVADOS</span></h2>
+          </div>
+
+          <div class="messages-layout glass-card">
+            <div class="messages-list-panel mobile-show" id="messages-list-panel">
+              <div id="messages-contacts">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <div class="messages-chat-panel" id="messages-chat-panel">
+              <div class="chat-empty" id="chat-empty">
+                <span class="empty-icon">💬</span>
+                <h3>Selecciona una conversación</h3>
+                <p>Elige un contacto para chatear</p>
+              </div>
+
+              <div id="chat-active" style="display:none; flex-direction:column; height:100%;">
+                <div class="chat-header">
+                  <button class="btn btn-ghost btn-sm" id="chat-back-btn" style="display:none;" onclick="App.showMessagesList()">
+                    ← Atrás
+                  </button>
+                  <div class="avatar avatar-sm" id="chat-avatar"></div>
+                  <div>
+                    <div class="chat-user-name" id="chat-user-name"></div>
+                    <div style="font-size:0.72rem; color:var(--text-muted);" id="chat-user-town"></div>
+                  </div>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                  <!-- Populated by JS -->
+                </div>
+                <div class="chat-input-bar">
+                  <input type="text" id="chat-input" placeholder="Escribe un mensaje..." onkeypress="if(event.key==='Enter')App.sendMessage()">
+                  <button class="btn btn-primary btn-sm" onclick="App.sendMessage()">Enviar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==== FRIENDS ==== -->
+        <section class="page-section" id="section-friends">
+          <div class="section-header">
+            <h2>👥 Amigos <span class="retro-title">// TU CREW</span></h2>
+            <p>Tus amigos del Tablón</p>
+          </div>
+
+          <div id="friend-requests-section" style="display:none; margin-bottom:24px;">
+            <h3 style="font-size:0.9rem; color:var(--accent); margin-bottom:12px;">📩 Solicitudes de amistad</h3>
+            <div id="friend-requests-list" class="friends-grid"></div>
+          </div>
+
+          <div id="friends-list" class="friends-grid">
+            <!-- Populated by JS -->
+          </div>
+
+          <div style="margin-top:32px;">
+            <h3 style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px;">🔍 Descubre gente</h3>
+            <div id="suggested-friends" class="friends-grid"></div>
+          </div>
+        </section>
+
+        <!-- ==== PROFILE ==== -->
+        <section class="page-section" id="section-profile">
+          <div class="profile-header-card glass-card">
+            <div class="profile-cover scanlines"></div>
+            <div class="profile-info-section">
+              <div class="profile-avatar-wrapper">
+                <div class="avatar avatar-xxl" id="profile-avatar"></div>
+              </div>
+              <h2 class="profile-name" id="profile-name"></h2>
+              <p class="profile-username" id="profile-username"></p>
+              <p class="profile-bio" id="profile-bio"></p>
+              <div class="profile-details" id="profile-details"></div>
+              <div class="profile-stats" id="profile-stats"></div>
+            </div>
+          </div>
+
+          <div class="profile-tabs">
+            <button class="profile-tab active" onclick="App.switchProfileTab('posts')">📝 Publicaciones</button>
+            <button class="profile-tab" onclick="App.switchProfileTab('rides')">🚗 Viajes</button>
+            <button class="profile-tab" onclick="App.switchProfileTab('info')">ℹ️ Info</button>
+          </div>
+
+          <div id="profile-content">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ---- Mobile Bottom Nav ---- -->
+    <nav class="mobile-nav" id="mobile-nav">
+      <button class="mobile-nav-item active" data-page="feed" onclick="App.navigateTo('feed')">
+        <span class="nav-icon">🏠</span>
+        Inicio
+      </button>
+      <button class="mobile-nav-item" data-page="events" onclick="App.navigateTo('events')">
+        <span class="nav-icon">📋</span>
+        Tablón
+      </button>
+      <button class="mobile-nav-item" data-page="rides" onclick="App.navigateTo('rides')">
+        <span class="nav-icon">🚗</span>
+        Viajes
+      </button>
+      <button class="mobile-nav-item" data-page="messages" onclick="App.navigateTo('messages')">
+        <span class="nav-icon">✉️</span>
+        Msjs
+        <span class="mobile-badge" id="mobile-msg-badge" style="display:none;">0</span>
+      </button>
+      <button class="mobile-nav-item" data-page="profile" onclick="App.navigateTo('profile')">
+        <span class="nav-icon">👤</span>
+        Perfil
+      </button>
+    </nav>
+  </div>
+
+  <!-- ============================================
+       CREATE RIDE MODAL
+       ============================================ -->
+  <div class="modal-overlay" id="create-ride-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>🚗 Ofrecer nuevo viaje</h3>
+        <button class="modal-close" onclick="App.closeCreateRideModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>📍 Origen</label>
+          <select id="ride-from" class="form-input">
+            <option value="">Selecciona tu pueblo/ciudad</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>🎓 Destino</label>
+          <select id="ride-to" class="form-input">
+            <option value="">Selecciona campus</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>📅 Fecha</label>
+          <input type="date" id="ride-date" class="form-input">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label>🕐 Salida</label>
+            <input type="time" id="ride-departure" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>🕐 Vuelta</label>
+            <input type="time" id="ride-return" class="form-input">
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label>💺 Plazas</label>
+            <select id="ride-seats" class="form-input">
+              <option value="1">1 plaza</option>
+              <option value="2">2 plazas</option>
+              <option value="3" selected>3 plazas</option>
+              <option value="4">4 plazas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>💰 Precio/persona</label>
+            <input type="number" id="ride-price" class="form-input" placeholder="2.00" step="0.50" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>🔄 ¿Viaje recurrente?</label>
+          <div class="days-selector" id="ride-days">
+            <label class="selected" data-day="L" onclick="this.classList.toggle('selected')">L</label>
+            <label class="selected" data-day="M" onclick="this.classList.toggle('selected')">M</label>
+            <label class="selected" data-day="X" onclick="this.classList.toggle('selected')">X</label>
+            <label class="selected" data-day="J" onclick="this.classList.toggle('selected')">J</label>
+            <label class="selected" data-day="V" onclick="this.classList.toggle('selected')">V</label>
+            <label data-day="S" onclick="this.classList.toggle('selected')">S</label>
+            <label data-day="D" onclick="this.classList.toggle('selected')">D</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>📝 Notas</label>
+          <textarea id="ride-notes" class="form-input" placeholder="Punto de recogida, ruta, observaciones..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="App.closeCreateRideModal()">Cancelar</button>
+        <button class="btn btn-accent" onclick="App.createRide()">Publicar viaje 🚗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       TOAST CONTAINER
+       ============================================ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ---- Scripts ---- -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
